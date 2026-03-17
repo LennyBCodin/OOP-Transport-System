@@ -2,22 +2,23 @@ public class Passenger extends User implements Payable {
     private double walletBalance;
 
     public Passenger(String name, String id, double walletBalance) {
-        super(name, id); // Inheritance: Passing data to User constructor
-        this.walletBalance = walletBalance; // Encapsulation: accessing private field
+        super(name, id);
+      
+        this.walletBalance = (walletBalance < 0) ? 0 : walletBalance;
     }
 
     @Override
     public void showDashboard() {
-        System.out.println(">>> PASSENGER PANEL: " + this.name + " (ID: " + this.id + ")");
+        System.out.println("Passenger: " + this.name + " | Balance: $" + walletBalance);
     }
 
     @Override
     public void processPayment(double amount) {
-        // Exception Handling Logic
+        
         if (amount > walletBalance) {
-            throw new ArithmeticException("Payment Denied: Balance is too low for this Taxify trip.");
+            throw new ArithmeticException("Insufficient funds! Trip cost: $" + amount + " but you only have $" + walletBalance);
         }
         this.walletBalance -= amount;
-        System.out.println("Transaction successful! New Balance: $" + walletBalance);
+        System.out.println("Payment Successful. Enjoy your ride!");
     }
 }
