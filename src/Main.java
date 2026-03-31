@@ -3,11 +3,13 @@ import java.util.InputMismatchException;
 
 public class Main {
     public static void main(String[] args) {
+        FleetManager manager = new FleetManager();
+        manager.loadFleet();
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("=== Welcome to Taxify Registration ===");
 
         try {
-            
             System.out.print("Enter Passenger Name: ");
             String pName = scanner.nextLine();
 
@@ -20,7 +22,6 @@ public class Main {
 
             Passenger p1 = new Passenger(pName, pId, pBalance);
 
-        
             System.out.println("\nSelect Vehicle Type (1: Standard Car, 2: Electric Car): ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -34,6 +35,7 @@ public class Main {
             } else {
                 throw new Exception("Invalid vehicle choice selected.");
             }
+            manager.addVehicle(selectedVehicle);
 
             System.out.print("\nEnter distance for your trip (in km): ");
             double distance = scanner.nextDouble();
@@ -45,15 +47,18 @@ public class Main {
 
             System.out.println("\nAttempting to process payment...");
             p1.processPayment(fare);
+            System.out.println("\n--- Current Registered Fleet ---");
+            manager.displayFleet();
 
         } catch (InputMismatchException e) {
-            System.err.println("CRITICAL ERROR: Invalid input format. Please enter numbers for balance/distance.");
+            System.err.println("CRITICAL ERROR: Invalid input format.");
         } catch (ArithmeticException e) {
             System.err.println("PAYMENT ERROR: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("SYSTEM ERROR: " + e.getMessage());
         } finally {
-            System.out.println("\n--- Closing Taxify Connection ---");
+            manager.saveFleet();
+            System.out.println("\n--- Data Saved & Closing Taxify Connection ---");
             scanner.close();
         }
     }
